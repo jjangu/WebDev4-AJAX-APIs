@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div id="overlay-content">
+      <h2>STRAYA</h2>
+      <p>He's got a massive bikkie my he hasn't got a buckley's chance. Flat out like a sickie to as dry as a slab. Built like a op shop to built like a bluey. Get a dog up ya bogan my he hasn't got a shag on a rock. Mad as a cranky heaps pretty spiffy. Mad as a thingo piece of piss come a esky.</p>
+    </div>
+    <script>
+      var map;
+      var service;
+      var infowindow;
+
+      function initMap() {
+        var pyrmont = new google.maps.LatLng(-33.8665433,151.1956316);
+
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: pyrmont,
+            zoom: 15
+          });
+
+        // infowindow = new google.maps.InfoWindow({
+        //   content: ''
+        // })
+
+        var request = {
+          location: pyrmont,
+          radius: '500',
+          query: 'restaurant'
+        };
+
+        service = new google.maps.places.PlacesService(map);
+        service.textSearch(request, callback);
+      }
+
+      function callback(results, status) {
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+          for (var i = 0; i < results.length; i++) {
+            var place = results[i];
+            createMarker(place);
+          }
+        }
+      }
+
+      function createMarker(place) {
+
+        var position = {'lat': place.geometry.location.lat(), 'lng': place.geometry.location.lng()};
+
+        var marker = new google.maps.Marker({
+          position: position,
+          map: map,
+          title: place.name,
+          draggable: false,
+          animation: google.maps.Animation.DROP
+
+        });
+        
+        // infowindow = null;
+        infowindow = new google.maps.InfoWindow({
+          content: place.name
+        })
+        google.maps.event.addListener(marker, 'click', function() {
+          infowindow.open(map,marker);
+        })
+      }
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBR8HUPpfW6Rt6azEwl1yqHRtG54pwByw8&callback=initMap&libraries=places"
+    async defer></script>
+  </body>
+</html>
